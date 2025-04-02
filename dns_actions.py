@@ -96,3 +96,47 @@ def purge_all_dns_records():
 
         print(f"[green]Done. {deleted_count} record(s) deleted.[/green]")
 
+def add_a_record():
+    zones = get_selected_zones()
+    if not zones:
+        print("[red]No zones selected.[/red]")
+        return
+
+    print("[magenta]Enter the subdomain (e.g. 'api'). Use '@' for root domain:[/magenta]", end=" ")
+    subdomain = input().strip()
+
+    if subdomain == "@":
+        for domain in zones.keys():
+            name = domain  # заменяем @ на корневой домен
+            break
+    else:
+        name = f"{subdomain}"
+
+    print("[magenta]Enter the IP address:[/magenta]", end=" ")
+    ip = input().strip()
+
+    print("[magenta]Enter TTL (default is 1, press Enter to use default):[/magenta]", end=" ")
+    ttl = input().strip()
+    ttl = int(ttl) if ttl else 1  # Преобразуем TTL в целое число
+
+    print("[magenta]Should the record be proxied? (y/n):[/magenta]", end=" ")
+    proxied_input = input().strip().lower()
+    proxied = True if proxied_input == "y" else False
+
+    for domain, zone_id in zones.items():
+        print(f"\n[bold cyan]Adding A-record to zone: {domain}[/bold cyan]")
+
+        data = {
+            "type": "A",
+            "name": name,
+            "content": ip,
+            "ttl": ttl,  # передаем как число
+            "proxied": proxied
+        }
+
+        response = invoke_cf("POST", f"zones/{zone_id}/dns_records", data=data)
+        
+        if response["success"]:
+            print(f"[green]A-record added for {name} → {ip}[/green]")
+        else:
+            print(f"[red]Failed to add A-record for {name}[/red]")

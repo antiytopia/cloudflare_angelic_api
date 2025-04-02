@@ -88,12 +88,13 @@ def main_menu():
 [magenta]1.[/] Set API Token
 [magenta]2.[/] Input Domains Manually
 [magenta]3.[/] Show Selected Zones
-[magenta]4.[/] Clear Selected Zones
+[magenta]4.[/] Add A Record
 [magenta]5.[/] Change A-record IPs
 [magenta]6.[/] Enable Always Use HTTPS
 [magenta]7.[/] Disable TLS 1.3
 [magenta]8.[/] Change SSL Mode
 [magenta]9.[/] Purge All DNS Records
+[magenta]10.[/] Clear Selected Zones
 [magenta]0.[/] Exit
 """)
         print("[bold magenta]Select an option:[/bold magenta]", end=" ")
@@ -106,7 +107,7 @@ def main_menu():
         elif choice == "3":
             show_selected_zones()
         elif choice == "4":
-            clear_zones()
+            dns_actions.add_a_record()
         elif choice == "5":
             dns_actions.change_a_records()
         elif choice == "6":
@@ -117,12 +118,14 @@ def main_menu():
             dns_actions.change_ssl_mode()
         elif choice == "9":
             dns_actions.purge_all_dns_records()
+        elif choice == "10":
+            clear_zones()
+
         elif choice == "0":
             print("[bold red]Goodbye![/bold red]")
             break
         else:
             print("[red]Invalid option. Try again.[/red]")
-
 
 
 if __name__ == "__main__":
