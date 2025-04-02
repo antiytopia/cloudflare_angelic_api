@@ -25,7 +25,7 @@
       python --version
       pip --version
 5. Клонируй проект или скачай архив
-  - git clone https://github.com/antiytopia/cloudflare-angelic.git
+  - git clone [https://github.com/antiytopia/cloudflare-angelic.git](https://github.com/antiytopia/cloudflare_angelic_api)
   - cd cloudflare-angelic
   Или скачай .zip с GitHub → распакуй в любую папку.
 5. Создай и активируй виртуальное окружение
