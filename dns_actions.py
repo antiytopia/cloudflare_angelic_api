@@ -137,6 +137,24 @@ def add_a_record():
         response = invoke_cf("POST", f"zones/{zone_id}/dns_records", data=data)
         
         if response["success"]:
-            print(f"[green]A-record added for {name} → {ip}[/green]")
+            print(f"[green]✔ A-record added for {name} → {ip}[/green]")
         else:
             print(f"[red]Failed to add A-record for {name}[/red]")
+
+def show_ns_names():
+    zones = get_selected_zones()
+    if not zones:
+        print("[red]No zones selected.[/red]")
+        return
+
+    for domain, zone_id in zones.items():
+        print(f"\n[bold cyan]NS Names for zone: {domain}[/bold cyan]")  # Это будет выводиться 1 раз
+
+        # Запрашиваем информацию о зоне
+        zone_info = invoke_cf("GET", f"zones/{zone_id}")["result"]
+        
+        if "name_servers" in zone_info:
+            for ns in zone_info["name_servers"]:
+                print(f"- {ns}")  # Только NS серверы
+        else:
+            print(f"[yellow]No NS names found for {domain}[/yellow]")

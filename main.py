@@ -95,6 +95,7 @@ def main_menu():
 [magenta]8.[/] Change SSL Mode
 [magenta]9.[/] Purge All DNS Records
 [magenta]10.[/] Clear Selected Zones
+[magenta]11.[/] Show NS Names
 [magenta]0.[/] Exit
 """)
         print("[bold magenta]Select an option:[/bold magenta]", end=" ")
@@ -120,6 +121,8 @@ def main_menu():
             dns_actions.purge_all_dns_records()
         elif choice == "10":
             clear_zones()
+        elif choice == "11":
+            dns_actions.show_ns_names()
 
         elif choice == "0":
             print("[bold red]Goodbye![/bold red]")
