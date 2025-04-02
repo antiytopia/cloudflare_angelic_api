@@ -48,11 +48,11 @@
 2. Нажми "Create Token"
 3. Выбери "Custom Token"
 4. В Permissions выбери:
-Zone - Read
-Zone Settings - Read
-Zone Settings - Edit
-DNS - Read
-DNS - Edit
+- Zone - Read
+- Zone Settings - Read
+- Zone Settings - Edit
+- DNS - Read
+- DNS - Edit
 5. В Resource выбери: All zones (НЕ specific!)
 6. Скопируй токен и вставь его при запуске
 
