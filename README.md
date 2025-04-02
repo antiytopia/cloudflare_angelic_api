@@ -5,6 +5,7 @@
 ## Возможности
 - Ввод и сохранение Cloudflare API токена
 - Ручной ввод доменов
+- Массовое добавление A-записей
 - Массовое изменение IP у всех A-записей
 - Включение Always Use HTTPS
 - Отключение TLS 1.3
@@ -55,6 +56,7 @@ DNS - Edit
 5. В Resource выбери: All zones (НЕ specific!)
 6. Скопируй токен и вставь его при запуске
 
+- Add A-records - добавление А-записи (@ для root работает так же)
 - Change A-record IPs — замена IP у всех A-записей
 - Enable Always Use HTTPS — включает принудительное HTTPS
 - Disable TLS 1.3 — отключает TLS 1.3
