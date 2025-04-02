@@ -1,5 +1,3 @@
-# dns_actions.py
-
 from client import invoke_cf
 from session import get_selected_zones
 from rich import print
@@ -11,11 +9,20 @@ def change_a_records():
         print("[red]No zones selected.[/red]")
         return
 
-    old_ip = input("Enter the old IP to replace: ").strip()
-    new_ip = input("Enter the new IP: ").strip()
+    print("[magenta]Enter the OLD IP:[/magenta]", end=" ")
+    old_ip = input().strip()
 
-    for zone_id in zones.values():
+    print("[magenta]Enter the NEW IP:[/magenta]", end=" ")
+    new_ip = input().strip()
+
+    updated_total = 0
+
+    for domain, zone_id in zones.items():
+        print(f"\n[bold cyan]Processing zone: {domain}[/bold cyan]")
+
         records = invoke_cf("GET", f"zones/{zone_id}/dns_records?type=A")["result"]
+        zone_updated = 0
+
         for record in records:
             if record["content"] == old_ip:
                 updated = {
@@ -26,7 +33,16 @@ def change_a_records():
                     "proxied": record["proxied"]
                 }
                 invoke_cf("PUT", f"zones/{zone_id}/dns_records/{record['id']}", data=updated)
-                print(f"[green]Updated:[/green] {record['name']} → {new_ip}")
+                print(f"[green] Updated:[/green] {record['name']} → {new_ip}")
+                zone_updated += 1
+
+        if zone_updated == 0:
+            print("[yellow]No matching A-records found.[/yellow]")
+
+        updated_total += zone_updated
+
+    print(f"\n[bold green]Done. {updated_total} record(s) updated in total.[/bold green]")
+
 
 
 def toggle_https(enable: bool):
