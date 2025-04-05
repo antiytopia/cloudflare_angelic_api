@@ -43,7 +43,7 @@
 ### 3. Скачай проект
 **Вариант A — через Git (если установлен Git)**
 
-         git clone https://github.com/antiytopia/cloudflare-angelic.git
+         git clone https://github.com/antiytopia/cloudflare_angelic_api.git
          cd cloudflare-angelic
    
 **Вариант B — без Git**
