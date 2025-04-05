@@ -44,19 +44,21 @@ def change_a_records():
     print(f"\n[bold green]Done. {updated_total} record(s) updated in total.[/bold green]")
 
 
-
 def toggle_https(enable: bool):
     value = "on" if enable else "off"
-    for zone_id in get_selected_zones().values():
+    zones = get_selected_zones()
+    for domain, zone_id in zones.items():
         invoke_cf("PATCH", f"zones/{zone_id}/settings/always_use_https", data={"value": value})
-        print(f"[cyan]Always Use HTTPS set to {value.upper()} for zone {zone_id}[/cyan]")
+        print(f"[cyan]Always Use HTTPS set to {value.upper()} for zone {domain}[/cyan]")
 
 
 def toggle_tls13(enable: bool):
     value = "on" if enable else "off"
-    for zone_id in get_selected_zones().values():
+    zones = get_selected_zones()
+    for domain, zone_id in zones.items():
         invoke_cf("PATCH", f"zones/{zone_id}/settings/tls_1_3", data={"value": value})
-        print(f"[cyan]TLS 1.3 set to {value.upper()} for zone {zone_id}[/cyan]")
+        print(f"[cyan]TLS 1.3 set to {value.upper()} for zone {domain}[/cyan]")
+
 
 
 def change_ssl_mode():
@@ -105,19 +107,12 @@ def add_a_record():
     print("[magenta]Enter the subdomain (e.g. 'api'). Use '@' for root domain:[/magenta]", end=" ")
     subdomain = input().strip()
 
-    if subdomain == "@":
-        for domain in zones.keys():
-            name = domain  # заменяем @ на корневой домен
-            break
-    else:
-        name = f"{subdomain}"
-
     print("[magenta]Enter the IP address:[/magenta]", end=" ")
     ip = input().strip()
 
     print("[magenta]Enter TTL (default is 1, press Enter to use default):[/magenta]", end=" ")
-    ttl = input().strip()
-    ttl = int(ttl) if ttl else 1  # Преобразуем TTL в целое число
+    ttl_input = input().strip()
+    ttl = int(ttl_input) if ttl_input else 1  # ← преобразование в целое число сохранено
 
     print("[magenta]Should the record be proxied? (y/n):[/magenta]", end=" ")
     proxied_input = input().strip().lower()
@@ -126,20 +121,23 @@ def add_a_record():
     for domain, zone_id in zones.items():
         print(f"\n[bold cyan]Adding A-record to zone: {domain}[/bold cyan]")
 
+        name = domain if subdomain == "@" else f"{subdomain}.{domain}"
+
         data = {
             "type": "A",
             "name": name,
             "content": ip,
-            "ttl": ttl,  # передаем как число
+            "ttl": ttl,  # ← передаём как int
             "proxied": proxied
         }
 
         response = invoke_cf("POST", f"zones/{zone_id}/dns_records", data=data)
-        
+
         if response["success"]:
-            print(f"[green]✔ A-record added for {name} → {ip}[/green]")
+            print(f"[green]A-record added for {name} → {ip}[/green]")
         else:
             print(f"[red]Failed to add A-record for {name}[/red]")
+
 
 def show_ns_names():
     zones = get_selected_zones()
@@ -158,3 +156,22 @@ def show_ns_names():
                 print(f"- {ns}")  # Только NS серверы
         else:
             print(f"[yellow]No NS names found for {domain}[/yellow]")
+            
+def show_all_dns_records():
+    zones = get_selected_zones()
+    if not zones:
+        print("[red]No zones selected.[/red]")
+        return
+
+    for domain, zone_id in zones.items():
+        print(f"\n[bold cyan]DNS Records for zone: {domain}[/bold cyan]")
+
+        records = invoke_cf("GET", f"zones/{zone_id}/dns_records")["result"]
+
+        if not records:
+            print("[yellow]No DNS records found.[/yellow]")
+            continue
+
+        for record in records:
+            print(f"[green]{record['type']}[/green] {record['name']} → {record['content']}")
+
