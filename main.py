@@ -94,8 +94,9 @@ def main_menu():
 [magenta]7.[/] Disable TLS 1.3
 [magenta]8.[/] Change SSL Mode
 [magenta]9.[/] Purge All DNS Records
-[magenta]10.[/] Clear Selected Zones
-[magenta]11.[/] Show NS Names
+[magenta]10.[/] Show NS Names
+[magenta]11.[/] Show all DNS Records
+[magenta]12.[/] Clear Selected Zones
 [magenta]0.[/] Exit
 """)
         print("[bold magenta]Select an option:[/bold magenta]", end=" ")
@@ -120,15 +121,17 @@ def main_menu():
         elif choice == "9":
             dns_actions.purge_all_dns_records()
         elif choice == "10":
-            clear_zones()
-        elif choice == "11":
             dns_actions.show_ns_names()
-
+        elif choice == "11":
+            dns_actions.show_all_dns_records()
+        elif choice == "12":
+            clear_zones()
         elif choice == "0":
             print("[bold red]Goodbye![/bold red]")
             break
         else:
             print("[red]Invalid option. Try again.[/red]")
+
 
 
 if __name__ == "__main__":
